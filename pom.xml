@@ -1,0 +1,214 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.saptarshi.sparkscala</groupId>
+    <artifactId>spark-basics-maven</artifactId>
+    <version>1.0.0</version>
+    <name>${project.artifactId}</name>
+    <description>${project.artifactId}</description>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <encoding>UTF-8</encoding>
+        <scala.version>2.11.12</scala.version>
+        <scala.compat.version>2.11</scala.compat.version>
+        <spec2.version>4.3.4</spec2.version>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+          <groupId>org.scala-lang</groupId>
+          <artifactId>scala-library</artifactId>
+          <version>${scala.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_${scala.compat.version}</artifactId>
+            <version>3.0.5</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-core_${scala.compat.version}</artifactId>
+            <version>${spec2.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-junit_${scala.compat.version}</artifactId>
+            <version>${spec2.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+
+        <plugins>
+
+            <!-- Required to compile Scala code in Maven -->
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.4.2</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Required to compile Java code in Maven -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Required to create a Uber Runnable Jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.saptarshi.sparkscala.driver.SparkDriver</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Required by Maven Eclipse Plugin (mvn eclipse:eclipse) to generate Source folders.
+            This will be needed only if you are dealing with Scala source files in a Maven project
+            because they are not identified by default. Another thing to understand here is that
+            this Plugin is required only if you want to generate Source folders and create the Eclipse
+            files from outside the IDE using the Maven Eclipse Plugin. Details are below in #1.
+
+            We will, however, not use this Plugin because we will allow M2E to do all the hard work
+            for use (i.e.) identify the Source folders automatically and also create the Eclipse files
+            while we import the project as an existing Maven project. Details are below in #2.
+
+            Eclipse files (.project, .classpath, .settings) can be created in two ways:
+
+            1. Using 'mvn eclipse:eclipse' command from the Command Line. This command uses the
+               Maven Eclipse Plugin to generate Eclipse files. The disadvantage of this approach
+               is that the Project has to be imported as a General Project (not a Maven Project)
+               into the Eclipse Workspace. So, one will loose all the features of M2E Plugin that
+               is provided by Eclipse; like building Maven projects from within Eclipse etc. The
+               project has to be built using the Command Line Maven installation.
+
+            2. Using M2E (Maven 2 Eclipse) Plugin that is an interal Eclipse plugin. If you import
+               an existing Maven project into Eclipse, then Eclipse will automatically use this M2E
+               to auto generate the files. This is the best way to deal with Maven projects in Eclipse
+               because it provides all Maven operations from within the IDE.
+
+            NOTE: There can be two flavours of mixing Scala and Java code:
+            A. Having '/src/main/scala' and '/src/main/java' as separate folders to keep respective files.
+            B. Keeping both Scala and Java files inside '/src/main/scala'.
+
+            Both the approaches have their own pros and cons. But the natural way seems to be grouping
+            the files based on their functionality (by creating packages) in a single Source folder and
+            not by the Programming language. So, it is generally recommended to follow approach B.
+            Having said that, sometimes it makes sense to go with approach A (i.e) having different
+            source folders for Java and Scala specially when you want to arrange your project into smaller
+            modules and each module exclusively uses either pure Java or pure Scala code.
+
+            If you want to use Maven Eclipse Plugin (#1) to generate Source folders from outside the IDE and
+            want to have different folders for Scala and Java, then you need to use the below Plugin with
+            both Scala and Java sources (as shown below). However, if you want to use both Scala and Java
+            in a single 'src/main/scala' folder, you need to comment lines #190 and #203.
+
+            As already mentioned above, we are using M2E (#2) to do all the hard work for us. So we will keep
+            the entire Plugin commented as it is now. When using M2E to import Maven Projects it will, by
+            default, create individual Source folders for both Scala and Java. If you want to stick to that
+            then nothing needs to be done. But here, we want to follow the natural grouping. So, we need to
+            go to Project > Properties > Java Build Path > Source tab and remove the '/src/main/java' and
+            'src/test/java' Source folders from the list. -->
+
+            <!-- <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/main/scala</source>
+                                <source>src/main/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/test/scala</source>
+                                <source>src/test/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin> -->
+
+        </plugins>
+
+    </build>
+
+</project>
