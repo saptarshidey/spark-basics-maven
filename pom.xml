@@ -56,6 +56,9 @@
 
     <build>
 
+        <sourceDirectory>src/main/scala</sourceDirectory>
+        <testSourceDirectory>src/test/scala</testSourceDirectory>
+
         <plugins>
 
             <!-- Required to compile Scala code in Maven -->
@@ -164,14 +167,13 @@
             If you want to use Maven Eclipse Plugin (#1) to generate Source folders from outside the IDE and
             want to have different folders for Scala and Java, then you need to use the below Plugin with
             both Scala and Java sources (as shown below). However, if you want to use both Scala and Java
-            in a single 'src/main/scala' folder, you need to comment lines #190 and #203.
+            in a single 'src/main/scala' folder, you need to comment lines #193 and #206.
 
             As already mentioned above, we are using M2E (#2) to do all the hard work for us. So we will keep
             the entire Plugin commented as it is now. When using M2E to import Maven Projects it will, by
-            default, create individual Source folders for both Scala and Java. If you want to stick to that
-            then nothing needs to be done. But here, we want to follow the natural grouping. So, we need to
-            go to Project > Properties > Java Build Path > Source tab and remove the '/src/main/java' and
-            'src/test/java' Source folders from the list. -->
+            default, create Source folder for only Scala where we can keep both Scala and Java source files.
+            If you want to use Approach A, then you have to go to Project > Properties > Java Build Path
+            > Source tab and then add '/src/main/java' and 'src/test/java' as new Source folders. -->
 
             <!-- <plugin>
                 <groupId>org.codehaus.mojo</groupId>
