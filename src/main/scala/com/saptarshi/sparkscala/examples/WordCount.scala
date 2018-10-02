@@ -1,7 +1,6 @@
 package com.saptarshi.sparkscala.examples
 
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.Dataset
 
 object WordCount {
 
