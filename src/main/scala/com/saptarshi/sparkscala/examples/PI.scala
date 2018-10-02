@@ -11,8 +11,7 @@ object PI {
         val spark = SparkSession.builder.appName("PI").getOrCreate()
 
         val sampleRDD = spark.sparkContext.parallelize(1 to sampleSize.toInt)
-        val filteredRDD = sampleRDD.filter(f =>
-            {
+        val filteredRDD = sampleRDD.filter(f => {
                 val x = Math.random
                 val y = Math.random
                 x*x + y*y < 1
