@@ -11,6 +11,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <encoding>UTF-8</encoding>
+        <spark.version>2.3.0</spark.version>
         <scala.version>2.11.12</scala.version>
         <scala.compat.version>2.11</scala.compat.version>
         <spec2.version>4.3.4</spec2.version>
@@ -19,27 +20,24 @@
     <dependencies>
 
         <dependency>
-          <groupId>org.scala-lang</groupId>
-          <artifactId>scala-library</artifactId>
-          <version>${scala.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.typesafe.scala-logging</groupId>
-            <artifactId>scala-logging_${scala.compat.version}</artifactId>
-            <version>3.9.0</version>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_${scala.compat.version}</artifactId>
-            <version>2.2.0</version>
+            <version>${spark.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-sql_${scala.compat.version}</artifactId>
-            <version>2.2.0</version>
+            <version>${spark.version}</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
@@ -94,31 +92,6 @@
                 </executions>
             </plugin>
 
-            <!-- Required to create a Uber Runnable Jar -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.saptarshi.sparkscala.driver.SparkDriver</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!-- Required by Maven Eclipse Plugin (mvn eclipse:eclipse) to generate Source folders.
             This will be needed only if you are dealing with Scala source files in a Maven project
             because they are not identified by default. Another thing to understand here is that
@@ -138,7 +111,7 @@
                is provided by Eclipse; like building Maven projects from within Eclipse etc. The
                project has to be built using the Command Line Maven installation.
 
-            2. Using M2E (Maven 2 Eclipse) Plugin that is an interal Eclipse plugin. If you import
+            2. Using M2E (Maven 2 Eclipse) Plugin that is an internal Eclipse plugin. If you import
                an existing Maven project into Eclipse, then Eclipse will automatically use this M2E
                to auto generate the files. This is the best way to deal with Maven projects in Eclipse
                because it provides all Maven operations from within the IDE.
@@ -152,12 +125,12 @@
             not by the Programming language. So, it is generally recommended to follow approach B.
             Having said that, sometimes it makes sense to go with approach A (i.e) having different
             source folders for Java and Scala specially when you want to arrange your project into smaller
-            modules and each module exclusively uses either pure Java or pure Scala code.
+            modules and each module exclusively uses either pure Java or pure Scala code. 
 
             If you want to use Maven Eclipse Plugin (#1) to generate Source folders from outside the IDE and
             want to have different folders for Scala and Java, then you need to use the below Plugin with
             both Scala and Java sources (as shown below). However, if you want to use both Scala and Java
-            in a single 'src/main/scala' folder, you need to comment lines #193 and #206.
+            in a single 'src/main/scala' folder, you need to comment lines #170 and #183.
 
             As already mentioned above, we are using M2E (#2) to do all the hard work for us. So we will keep
             the entire Plugin commented as it is now. When using M2E to import Maven Projects it will, by
