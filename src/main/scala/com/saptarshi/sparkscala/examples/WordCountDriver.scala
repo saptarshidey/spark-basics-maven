@@ -2,7 +2,7 @@ package com.saptarshi.sparkscala.examples
 
 import org.apache.spark.sql.SparkSession
 
-object WordCount {
+object WordCountDriver {
 
     def main(args: Array[String]): Unit = {
         require(args != null && args.length == 2, "Input filename and Method (DS/DF/RDD) required")

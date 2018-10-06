@@ -2,7 +2,7 @@ package com.saptarshi.sparkscala.examples
 
 import org.apache.spark.sql.SparkSession
 
-object MapPartitions {
+object MapPartitionsDriver {
 
     def main(args: Array[String]): Unit = {
         val spark = SparkSession.builder.appName("Map Partitions").getOrCreate()

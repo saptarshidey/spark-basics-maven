@@ -2,13 +2,13 @@ package com.saptarshi.sparkscala.examples
 
 import org.apache.spark.sql.SparkSession
 
-object PI {
+object PiDriver {
 
     def main(args: Array[String]): Unit = {
         require(args != null && args.length == 1, "Sample size required")
         val Array(sampleSize) = args
 
-        val spark = SparkSession.builder.appName("PI").getOrCreate()
+        val spark = SparkSession.builder.appName("Pi").getOrCreate()
 
         val sampleRDD = spark.sparkContext.parallelize(1 to sampleSize.toInt)
         val filteredRDD = sampleRDD.filter(f => {

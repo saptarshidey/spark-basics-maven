@@ -2,7 +2,7 @@ package com.saptarshi.sparkscala.examples
 
 import org.apache.spark.sql.SparkSession
 
-object JoinOperation {
+object JoinOperationDriver {
 
     def main(args: Array[String]): Unit = {
         require(args != null && args.length == 2, "Employee and Employee_Details Files required")
