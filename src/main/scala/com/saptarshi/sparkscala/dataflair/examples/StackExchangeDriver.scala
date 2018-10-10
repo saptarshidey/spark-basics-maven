@@ -81,16 +81,19 @@ object StackExchangeDriver {
         questions.groupBy( split($"CreationDate", "-")(1) as "month" ).agg( count("Id") as "question_count" ).orderBy($"question_count".desc).show(false)
 
         // Questions containing specific words in their title
-        questions.filter( $"Title".contains("data") || $"Title".contains("science") || $"Title".contains("hadoop") || $"Title".contains("spark") ).count
+        val questionWithWords = questions.filter( $"Title".contains("data") || $"Title".contains("science") || $"Title".contains("hadoop") || $"Title".contains("spark") ).count
+        println(s"Number of Questions containing 'data', 'science', 'hadoop', 'spark' = ${ questionWithWords }")
 
         // Top 10 highest viewed questions
-        questions.orderBy( $"ViewCount".cast(IntegerType).desc ).show(10, false)
+        questions.orderBy( $"ViewCount".cast(IntegerType).desc ).show(10)
 
         // Questions with more than 2 answers
-        questions.filter( $"AnswerCount".cast(IntegerType) > 2 ).count
+        val questionsWithMoreThan2Ans = questions.filter( $"AnswerCount".cast(IntegerType) > 2 ).count
+        println(s"Number of Questions with more than 2 Answers = ${ questionsWithMoreThan2Ans }")
 
         // Questions that are active for the last 6 months
-        questions.filter( datediff(to_date($"LastActivityDate", "yyyy-MM-dd'T'HH:mm:ss.SSS"), to_date($"CreationDate", "yyyy-MM-dd'T'HH:mm:ss.SSS")) >= 180).count
+        val questionsActiveFor6Months = questions.filter( datediff(to_date($"LastActivityDate", "yyyy-MM-dd'T'HH:mm:ss.SSS"), to_date($"CreationDate", "yyyy-MM-dd'T'HH:mm:ss.SSS")) >= 180).count
+        println(s"Number of Questions active for last 6 Months = ${ questionsActiveFor6Months }")
 
         // List of all Tags along with their count
         questions.select( explode(split(regexp_replace(regexp_replace($"Tags", "&lt", ""), "&gt", "" ), ";")) as "Tags" ).groupBy("Tags").agg(count("Tags") as "Count").orderBy($"Count".desc).show(false)
