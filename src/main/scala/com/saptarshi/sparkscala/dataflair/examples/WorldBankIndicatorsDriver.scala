@@ -42,14 +42,19 @@ object WorldBankIndicatorsDriver {
         // Top 2 most urban populous countries
         val countryUrbanPopulation = input.select($"country", regexp_replace($"population_urban", ",", "").cast(LongType) as "population_urban")
         val countryMaxUrbanPopulation = countryUrbanPopulation.groupBy("country").agg(max("population_urban") as "population_urban")
-        countryMaxUrbanPopulation.orderBy($"population_urban".desc).show(2)
+        countryMaxUrbanPopulation.orderBy($"population_urban".desc).show(2, false)
 
         // Top 2 highest population growth in the past decade
         val countryPopulation = input.select($"country", regexp_replace($"population_total", ",", "").cast(LongType) as "population_total")
         val countryMinMaxPopulation = countryPopulation.groupBy("country").agg(min("population_total") as "min_population", max("population_total") as "max_population")
         val countryPopulationGrowth = countryMinMaxPopulation.select($"country", ($"max_population" - $"min_population") / $"min_population" * 100.0 as "population_growth")
-        countryPopulationGrowth.orderBy($"population_growth".desc).show(2)
+        countryPopulationGrowth.orderBy($"population_growth".desc).show(2, false)
 
+        // Highest GDP growth from 2009 to 2010
+        val countryGDP = input.select( $"country", coalesce(regexp_replace($"gdp", ",", ""), lit("0")).cast(LongType) as "gdp" ).where( split($"effective_date", "/")(2) isin ("2009", "2010") )
+        val countryGDPMinMax = countryGDP.groupBy("country").agg( min("gdp") as "gdp_min", max("gdp") as "gdp_max" )
+        val countryGDPGrowth = countryGDPMinMax.select( $"country", ($"gdp_max" - $"gdp_min") / $"gdp_min" * 100 as "gdp_growth" )
+        countryGDPGrowth.orderBy($"gdp_growth".desc).show(false)
 
         spark.stop()
     }
