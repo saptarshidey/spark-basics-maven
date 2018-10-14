@@ -1,4 +1,4 @@
-package com.saptarshi.sparkscala.dataflair.examples
+package com.saptarshi.sparkscala.df.examples
 
 import scala.xml.XML
 import org.apache.spark.sql.SparkSession
@@ -40,11 +40,10 @@ object StackExchangeDriver {
 
         val input = spark.read.text(stackExchangeFile)
 
-        /* Databricks provides a spark-xml package to read xml files, but the library
-         * does not support files that contain rows with self closing xml tags. Also
-         * it does not have a consistent behavior for large files. In this example, we
-         * are loading the data as a Text file (each line is a xml Element) and then
-         * using scala.xml package to parse the data and create a DataFrame */
+        /* Databricks provides a spark-xml package to read xml files, but the library does not support files that contain
+         * rows with self closing xml tags. Also it does not have a consistent behavior for large files. In this example,
+         * we are loading the data as a Text file (each line is a xml Element) and then using scala.xml package to parse
+         * the data and create a DataFrame */
 
         val xmlData = input.filter(_.getString(0).trim.startsWith("<row"))
                            .map(row => {

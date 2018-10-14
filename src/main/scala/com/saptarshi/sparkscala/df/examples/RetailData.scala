@@ -1,4 +1,4 @@
-package com.saptarshi.sparkscala.dataflair.examples
+package com.saptarshi.sparkscala.df.examples
 
 import java.sql.Date
 import java.sql.Timestamp

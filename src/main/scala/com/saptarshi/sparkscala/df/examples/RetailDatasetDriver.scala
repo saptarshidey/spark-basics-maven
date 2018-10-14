@@ -1,4 +1,4 @@
-package com.saptarshi.sparkscala.dataflair.examples
+package com.saptarshi.sparkscala.df.examples
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.Encoders

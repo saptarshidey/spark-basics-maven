@@ -1,4 +1,4 @@
-package com.saptarshi.sparkscala.examples
+package com.saptarshi.sparkscala.transformations.examples
 
 import org.apache.spark.sql.SparkSession
 
